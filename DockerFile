@@ -1,0 +1,26 @@
+# base image
+FROM node:latest
+
+# working directory 
+WORKDIR /usr/app
+
+# install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose ports
+EXPOSE 3000
+
+# Set up environment variables for MongoDB connection
+ENV MONGO_HOST=mongodb
+ENV MONGO_PORT=27017
+ENV MONGO_DB=userDemoDB
+
+# Start the MongoDB service
+CMD ["mongod", "--bind_ip_all", "--dbpath", "/data/db", "--logpath", "/dev/null", "--quiet", "--smallfiles", "--port", "$MONGO_PORT", "--fork"]
+
+# Start the application
+CMD ["npm", "start"]
